@@ -212,7 +212,7 @@ None. Noted that the repo has ~53 pre-existing unit-test failures and pre-existi
 
 ### Check-in 2 (end of week)
 
-**PR link:** _PR_LINK_PLACEHOLDER_
+**PR link:** https://github.com/RoshniSingh101/pathreview/pull/1
 
 **Branch:** `tree/fix/153-faithfulness`
 
@@ -226,4 +226,4 @@ Fixed `FaithfulnessChecker.check()` so a context chunk whose `text` key is prese
 
 _Note on "passes": this repo has documented pre-existing failures (≈53 failing unit tests and pre-existing lint/type errors in unrelated modules). Baseline before my change: 53 failed / 375 passed. After my change: 52 failed / 378 passed — my change fixes the target test, adds two passing tests, and introduces no new failures. My edited lines are black- and ruff-clean and mypy reports no new errors._
 
-**Draft PR feedback received from:** none
+**Draft PR feedback received from:** Pending
