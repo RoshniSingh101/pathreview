@@ -227,3 +227,36 @@ Fixed `FaithfulnessChecker.check()` so a context chunk whose `text` key is prese
 _Note on "passes": this repo has documented pre-existing failures (≈53 failing unit tests and pre-existing lint/type errors in unrelated modules). Baseline before my change: 53 failed / 375 passed. After my change: 52 failed / 378 passed — my change fixes the target test, adds two passing tests, and introduces no new failures. My edited lines are black- and ruff-clean and mypy reports no new errors._
 
 **Draft PR feedback received from:** Pending
+
+---
+
+## Week 10 — Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [x] No — still awaiting review
+
+**Summary of feedback:**
+No review comments or change requests had come in on PR #1 by the end of the week. The PR remains open and ready for review with no reviewer activity yet beyond the original description.
+
+**How you responded:**
+No changes were required. I re-read the PR myself once more before the deadline to confirm the diff is still scoped to issue #153, the tests pass, and the "Notes for Reviewers" section clearly documents the repo's pre-existing failures so a reviewer isn't confused by the baseline test output.
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+The fix itself was one line, but everything *around* the fix was harder than I expected. The biggest surprise was the pre-existing failures: running `make test-unit` showed 53 failing tests and `make check` had lint/type errors that had nothing to do with my issue. It took real effort to separate "my problem" from "the repo's existing problems" and to prove my change made nothing worse (53→52 failed, 375→378 passed) rather than assuming a green run. The tooling also fought me — the pre-commit hooks ran black/ruff/mypy across the whole file and failed on pre-existing issues (untyped test functions, an unused variable, whole-file formatting), which forced a decision about how to commit without reformatting unrelated code.
+
+**What did you learn about working in a large codebase?**
+Contributing to someone else's production code is much more about *scope discipline* than cleverness. On my own project I'd have "fixed everything I saw" — reformatted the file, fixed the scoring tests, cleaned up the imports. Here the right move was the opposite: keep the diff surgical (one functional line plus two tests), leave the three unrelated scoring-test failures explicitly out of scope, and document the pre-existing state so a reviewer can trust that my change is safe. I also learned to read the project's conventions first — CONTRIBUTING.md's Conventional Commits format, the branch-naming rule, Google-style docstrings — instead of guessing, because a reviewer judges the contribution against *their* standards, not mine.
+
+**How did AI tools help — and where did they fall short?**
+AI was most useful for orientation and verification speed: locating the exact failing line, explaining *why* `dict.get("text", "")` returns `None` for a present-but-`None` key (the default only applies to missing keys), running the baseline-vs-after test comparison, and drafting the PLAN.md, tests, PR body, and journal entries in the project's conventions. Where it fell short was judgment calls that depended on context only I could own — whether to open the PR against upstream or my own fork, whether to rename the branch given it would break my earlier submissions, and how strictly to interpret "make check passes" in a repo full of pre-existing failures. AI could lay out the trade-offs clearly, but the decisions were mine to make.
+
+**What would you do differently if you started over?**
+I'd get the branch name right from the start. I named it `tree/fix/153-faithfulness`, which doesn't follow the `fix/<issue>-<description>` convention and produced an awkward double-`tree` portal URL. Renaming later would have broken my Weeks 7–9 submission links, so I kept it — but a convention-correct name on day one would have avoided the whole trade-off. I'd also run `make test-unit` and `make check` to capture the baseline *before* touching anything, rather than discovering the pre-existing failures mid-way and having to reconstruct what was already broken.
+
+**What are you most proud of from this module?**
+Turning a vague, slightly wrong initial understanding into a disciplined, well-documented contribution. My first framing of the fix was "throw an exception so it doesn't crash," which was backwards — the failing test actually expected graceful handling. Catching that, correcting the approach to coercing `None` to an empty string, backing it with edge-case tests, and being honest in the PR about what I did and didn't fix feels like the difference between "making a change" and "making a contribution someone can trust."
