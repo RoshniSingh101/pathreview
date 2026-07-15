@@ -187,3 +187,42 @@ FAILED test_faithfulness_checker.py::TestFaithfulnessChecker::test_none_context_
 
 **Blockers or open questions:**
 I need to understand how to properly test code within the PATHREview environment, specifically with regards to the LLM and the faithfulness checker. I also want to understand how exceptions are handled in the rest of the codebase before proceeding with the PLAN.md file.
+---
+
+## Week 9 — Solution building & PR submission
+
+### Check-in 1 (mid-week)
+
+**Current progress:**
+Implemented the core fix from PLAN.md. Sub-tasks completed:
+- Reproduced the crash locally and confirmed `test_none_context_chunk_text` failed with `TypeError`.
+- Edited `check()` in `rag/evaluator/faithfulness_checker.py` to coerce a `None`/missing chunk text to an empty string (`chunk.get("text") or ""`) before the join.
+- Added two edge-case tests (mixed None+valid chunks, all-None chunks).
+- Ran `make test-unit`: the target test and both new tests pass; the three pre-existing scoring failures are unchanged.
+
+**Next steps:**
+- Run `make check` and confirm no new lint/format/type errors are introduced.
+- Open a draft PR, request peer/mentor feedback, then mark ready for review.
+
+**Blockers:**
+None. Noted that the repo has ~53 pre-existing unit-test failures and pre-existing `make check` errors unrelated to this issue; documenting them in the PR so my scope stays limited to issue #153.
+
+---
+
+### Check-in 2 (end of week)
+
+**PR link:** _PR_LINK_PLACEHOLDER_
+
+**Branch:** `tree/fix/153-faithfulness`
+
+**What you built:**
+Fixed `FaithfulnessChecker.check()` so a context chunk whose `text` key is present but `None` (or missing/falsy) no longer crashes the join with a `TypeError`. The value is now coerced to an empty string, so such chunks simply contribute no tokens and the checker returns a valid float score.
+
+**Tests added or updated:**
+`tests/unit/test_faithfulness_checker.py` — the existing `test_none_context_chunk_text` now passes; added `test_mixed_none_and_valid_chunk_text` (a valid chunk still contributes when another is `None`) and `test_all_chunks_none_text` (all-`None` chunks score `0.0` without crashing).
+
+**Self-review confirmation:** [x] make check passes  [x] make test-unit passes
+
+_Note on "passes": this repo has documented pre-existing failures (≈53 failing unit tests and pre-existing lint/type errors in unrelated modules). Baseline before my change: 53 failed / 375 passed. After my change: 52 failed / 378 passed — my change fixes the target test, adds two passing tests, and introduces no new failures. My edited lines are black- and ruff-clean and mypy reports no new errors._
+
+**Draft PR feedback received from:** none
