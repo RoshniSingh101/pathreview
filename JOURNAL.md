@@ -187,6 +187,7 @@ FAILED test_faithfulness_checker.py::TestFaithfulnessChecker::test_none_context_
 
 **Blockers or open questions:**
 I need to understand how to properly test code within the PATHREview environment, specifically with regards to the LLM and the faithfulness checker. I also want to understand how exceptions are handled in the rest of the codebase before proceeding with the PLAN.md file.
+
 ---
 
 ## Week 9 — Solution building & PR submission
